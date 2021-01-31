@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  smlsharp:
+    image: smlsharp
+    environment:
+      - LLVM_MAJOR=10
+      - SMLSHARP_VERSION=3.7.0
