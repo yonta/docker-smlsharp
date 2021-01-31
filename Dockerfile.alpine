@@ -1,0 +1,74 @@
+FROM alpine:3.13.1 as builder
+# FROM frolvlad/alpine-glibc as builder
+
+ARG LLVM_MAJOR=10
+ARG SMLSHARP_VERSION=3.7.0
+
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+
+WORKDIR /massivethreads
+RUN wget https://github.com/massivethreads/massivethreads/archive/v0.99-adws-alpha.tar.gz
+RUN wget https://raw.githubusercontent.com/yonta/docker-smlsharp/main/massivethreads.patch
+RUN tar xzf v0.99-adws-alpha.tar.gz
+
+# RUN apk --update --no-cache add clang-dev binutils
+RUN apk --update --no-cache add \
+    alpine-sdk musl-dev build-base binutils make patch gcc file libpthread-stubs
+    # gcc libc-dev
+
+RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.32-r0/glibc-2.32-r0.apk && \
+apk add glibc-2.32-r0.apk
+
+RUN patch -p0 -u -t -d . < massivethreads.patch
+
+# ENV CC=clang
+RUN cd massivethreads-0.99-adws-alpha && \
+    ./configure CFLAGS="-Wall -O3" && \
+    make -j3 && \
+    make install
+
+WORKDIR /smlsharp
+RUN apk --update --no-cache add \
+    llvm"${LLVM_MAJOR}"-dev=~"${LLVM_MAJOR}".0 \
+    xz
+
+RUN wget https://www.pllab.riec.tohoku.ac.jp/smlsharp/download/smlsharp-${SMLSHARP_VERSION}.tar.gz
+RUN tar xzf smlsharp-${SMLSHARP_VERSION}.tar.gz
+# RUN cd smlsharp-${SMLSHARP_VERSION} && \
+    # ./configure --with-massivethreads=/usr/local
+
+# webpacker environment
+# COPY --from=node /usr/local/bin/node /usr/local/bin/node
+# COPY --from=node /usr/local/include/node /usr/local/include/node
+# COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+# COPY --from=node /opt/yarn-v1.22.5 /opt/yarn
+# RUN ln -s /usr/local/bin/node /usr/local/bin/nodejs && \
+#     ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+#     ln -s /opt/yarn/bin/yarn /usr/local/bin/yarn
+
+# FROM alpine:3.13.1
+
+# パッケージ全体を軽量化して、railsが起動する最低限のものにする
+# RUN apk --update --no-cache add \
+#     shadow=~4.8 sudo=~1.9 busybox-suid=~1.32 mariadb-connector-c-dev=~3.1 \
+#     tzdata=~2021 execline=~2.7 postgresql-client=~13.1 && \
+#     cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+
+# WORKDIR /smlsharp
+
+# gemやassets:precompileの終わったファイルはbuilderからコピーしてくる
+# COPY --from=builder /rails/vendor/bundle vendor/bundle
+# COPY --from=builder /usr/local/bundle /usr/local/bundle
+# COPY --from=builder /rails/public/assets/ /sakazuki/public/assets/
+# COPY --from=builder /rails/public/packs/ /sakazuki/public/packs/
+# COPY . /sakazuki
+
+# Add a script to be executed every time the container starts.
+# COPY entrypoint.sh /usr/bin/
+# RUN chmod +x /usr/bin/entrypoint.sh
+# ENTRYPOINT ["entrypoint.sh"]
+# EXPOSE 3000
+
+# Start the main process.
+# CMD ["rails", "server", "-b", "0.0.0.0"]
