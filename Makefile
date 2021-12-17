@@ -3,9 +3,9 @@
 all: all-slim
 
 slim:
-	docker build -f Dockerfile.slim -t smlsharp:buster-slim .
+	docker build --file Dockerfile.slim --tag smlsharp:buster-slim .
 
 run-slim: slim
-	docker run -it --rm smlsharp:buster-slim
+	docker run --interactive --tty --rm smlsharp:buster-slim
 
 clean:
