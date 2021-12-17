@@ -1,9 +1,8 @@
 # syntax=docker/dockerfile:1.3-labs
 FROM debian:buster-slim
 
-ARG smlsharp_version="3.7.1"
-ARG sources_url="https://www.pllab.riec.tohoku.ac.jp/smlsharp/download/debian/dists/buster/smlsharp.list"
-
+ARG smlsharp_version="4.0.0"
+ARG sources_url="https://github.com/smlsharp/repos/raw/main/debian/dists/buster/smlsharp.list"
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
