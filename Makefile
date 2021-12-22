@@ -1,6 +1,6 @@
 .PHONY: all slim-latest slim-3.7.1 run-slim clean
 
-all: all-slim
+all: slim-latest
 
 slim-latest:
 	docker build --file Dockerfile.slim --tag yonta44/smlsharp:4.0.0-buster-slim .
