@@ -1,9 +1,7 @@
-.PHONY: all
+.PHONY: all push
 
 all: Dockerfile
 	docker build --file Dockerfile --tag yonta44/smlsharp:3.5.0-buster-slim .
-	docker tag yonta44/smlsharp:3.5.0-buster-slim yonta44/smlsharp:3.5.0
 
 push:
 	docker push yonta44/smlsharp:3.5.0-buster-slim
-	docker push yonta44/smlsharp:3.5.0
