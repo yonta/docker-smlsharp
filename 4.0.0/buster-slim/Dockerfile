@@ -8,18 +8,17 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 RUN <<EOF
   apt-get update -qq
-  apt-get install -yq wget
-  wget -P /usr/share/keyrings \
+  apt-get upgrade -qq --yes
+  apt-get install --yes -qq --no-install-recommends wget=1.21* ca-certificates=20210119*
+  wget --quiet --directory-prefix=/usr/share/keyrings \
   https://www.pllab.riec.tohoku.ac.jp/smlsharp/download/debian/dists/buster/smlsharp-archive-keyring.gpg
-  wget -P /etc/apt/sources.list.d \
-  $sources_url
+  wget --quiet --directory-prefix=/etc/apt/sources.list.d $sources_url
   apt-get update -qq
-  apt-get install -y --no-install-recommends smlsharp=$smlsharp_version*
-  apt-get purge -y wget
-  apt-get autopurge -y
-  rm -rf /var/cache/apt/archives/*
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-  truncate -s 0 /var/log/**/*log
+  apt-get install --yes -qq --no-install-recommends smlsharp=$smlsharp_version*
+  apt-get purge --yes -qq wget ca-certificates
+  apt-get autopurge --yes -qq
+  rm --recursive --force /var/cache/apt/archives/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  truncate --size=0 /var/log/**/*log
 EOF
 
 CMD ["smlsharp"]
