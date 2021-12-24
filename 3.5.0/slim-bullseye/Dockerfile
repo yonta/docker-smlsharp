@@ -21,6 +21,9 @@ RUN <<EOF
   dpkg --install massivethreads_1.00-2_amd64.deb \
                  massivethreads-dev_1.00-2_amd64.deb \
                  smlsharp_3.5.0-1_amd64.deb
+  rm massivethreads_1.00-2_amd64.deb \
+     massivethreads-dev_1.00-2_amd64.deb \
+     smlsharp_3.5.0-1_amd64.deb
   apt-get purge --yes -qq wget ca-certificates
   apt-get autopurge --yes -qq
   rm --recursive --force /var/cache/apt/archives/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
