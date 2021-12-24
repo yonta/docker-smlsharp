@@ -1,9 +1,9 @@
 .PHONY: all push
 
 all:
-	$(MAKE) -C slim-buster
-	$(MAKE) -C slim-bullseye
+	$(MAKE) -C buster-slim
+	$(MAKE) -C bullseye-slim
 
 push:
-	$(MAKE) push -C slim-buster
-	$(MAKE) push -C slim-bullseye
+	$(MAKE) push -C buster-slim
+	$(MAKE) push -C bullseye-slim
