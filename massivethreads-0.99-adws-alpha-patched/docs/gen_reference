@@ -1,0 +1,11 @@
+#!/bin/bash
+
+cd $(dirname $0)/..
+
+outdir=docs/reference
+config_dir=docs/config
+mkdir -p ${outdir}
+mkdir -p ${config_dir}
+
+# To use the latest naturaldocs, use docker (apt version is old)
+docker run -it --rm -v $PWD:/workdir s417lama/naturaldocs naturaldocs -i include/myth -o html ${outdir} -p ${config_dir}
