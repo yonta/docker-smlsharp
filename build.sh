@@ -8,6 +8,7 @@ set -eu
 # environment variables
 
 source .env
+name=${DOCKERHUB_USER}/smlsharp
 
 # color message
 
@@ -19,19 +20,35 @@ function message() {
 
 # build Dockerfile
 
-name=${DOCKERHUB_USER}/smlsharp
-
 for version in ${VERSIONS}; do
     for image in ${IMAGES}; do
-        if [ -f ${version}/${image}/Dockerfile ]; then
-            short_tag=${name}:${version}
-            tag=${short_tag}-${image}
-            message "building ${tag}"
-            docker build --tag ${tag} ${version}/${image}
-            if [ "${image}" = "${SHORT_IMAGE}" ]; then
-                docker tag ${tag} ${short_tag}
-            fi
-        fi
+        short_tag=${name}:${version}
+        tag=${short_tag}-${image}
+
+        # build
+        case ${version} in
+            3.7.0|3.7.1|4.0.0)
+                if [ -f 3.7.0/${image}/Dockerfile ]; then
+                    message "building ${tag}"
+                    docker build \
+                           --file 3.7.0/${image}/Dockerfile \
+                           --build-arg \
+                           version=${version} \
+                           --tag ${tag} \
+                           .
+                    if [ "${image}" = "${SHORT_IMAGE}" ]; then
+                        docker tag ${tag} ${short_tag}
+                    fi
+                fi ;;
+            *)
+                if [ -f ${version}/${image}/Dockerfile ]; then
+                    message "building ${tag}"
+                    docker build --tag ${tag} ${version}/${image}
+                    if [ "${image}" = "${SHORT_IMAGE}" ]; then
+                        docker tag ${tag} ${short_tag}
+                    fi
+                fi ;;
+        esac
     done
 done
 
