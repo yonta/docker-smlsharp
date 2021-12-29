@@ -9,9 +9,9 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 RUN <<EOF
   apt-get update -qq
   apt-get upgrade -qq --yes
-  apt-get install --yes -qq --no-install-recommends wget=1.21* ca-certificates=20210119*
+  apt-get install --yes -qq --no-install-recommends wget=1.20.* ca-certificates=20200601*
   wget --quiet --directory-prefix=/usr/share/keyrings \
-  https://www.pllab.riec.tohoku.ac.jp/smlsharp/download/debian/dists/buster/smlsharp-archive-keyring.gpg
+    https://www.pllab.riec.tohoku.ac.jp/smlsharp/download/debian/dists/buster/smlsharp-archive-keyring.gpg
   wget --quiet --directory-prefix=/etc/apt/sources.list.d $sources_url
   apt-get update -qq
   apt-get install --yes -qq --no-install-recommends smlsharp=$smlsharp_version*
