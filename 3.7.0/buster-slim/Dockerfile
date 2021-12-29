@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1.3-labs
 FROM debian:buster-slim
 
+ARG version="3.7.0"
+
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 
 RUN <<EOF
@@ -13,15 +15,15 @@ RUN <<EOF
   apt-mark auto \
     libc6 libgcc1 libgmp10 libstdc++6 gcc llvm-7 libc6-dev libgmp-dev
   wget --quiet \
-    https://github.com/smlsharp/repos/raw/main/debian/pool/s/smlsharp/smlsharp_4.0.0-1%2B1%7Ebuster1_amd64.deb \
+    https://github.com/smlsharp/repos/raw/main/debian/pool/s/smlsharp/smlsharp_${version}-1%2B1%7Ebuster1_amd64.deb \
     https://github.com/smlsharp/repos/raw/main/debian/pool/m/massivethreads/massivethreads-dev_1.00-2%2B1%7Ebuster1_amd64.deb \
     https://github.com/smlsharp/repos/raw/main/debian/pool/m/massivethreads/massivethreads_1.00-2%2B1%7Ebuster1_amd64.deb
   dpkg --install massivethreads_1.00-2+1~buster1_amd64.deb \
                  massivethreads-dev_1.00-2+1~buster1_amd64.deb \
-                 smlsharp_4.0.0-1+1~buster1_amd64.deb
+                 smlsharp_${version}-1+1~buster1_amd64.deb
   rm massivethreads_1.00-2+1~buster1_amd64.deb \
      massivethreads-dev_1.00-2+1~buster1_amd64.deb \
-     smlsharp_4.0.0-1+1~buster1_amd64.deb
+     smlsharp_${version}-1+1~buster1_amd64.deb
   apt-get purge --yes -qq wget ca-certificates
   apt-get autopurge --yes -qq
   rm --recursive --force /var/cache/apt/archives/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
